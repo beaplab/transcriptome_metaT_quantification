@@ -9,7 +9,7 @@ A small project to evaluate how many species of Florenciella are abundant
 
 ### Objective 
 
-Obtain the V9, V4, transcriptomes, housekeeping gene trees and try to disentangle how many species are abundant in prominent in the dataset. 
+Obtain the V9, V4, transcriptomes, housekeeping gene trees and try to disentangle how many species are abundant and what is its prevalence over the diferent regions. 
 
 ### Approaches 
 
