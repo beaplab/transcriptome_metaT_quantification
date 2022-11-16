@@ -1,10 +1,11 @@
-# delving_into_florenciella
+# Delving into Florenciella
+
 A small project to evaluate how many species of Florenciella are abundant 
 
 
 ### Problem definition 
 
-Florenciella parvula presents the rank 31 in the **Tara** Oceans dataset for the V9 region of the 18S rRNA gene. For the V4 region however the rank is way lower, the 288. A possible explanation of this difference is that there are multiple species or ecotypes collapsed inside the V9 abundance distribution, splitted in the V4 case. 
+*Florenciella parvula* presents the rank 31 in the *Tara* Oceans dataset for the V9 region of the 18S rRNA gene. For the V4 region however the rank is way lower, the 288. A possible explanation of this difference is that there are multiple species or ecotypes collapsed inside the V9 abundance distribution, splitted in the V4 case. 
 
 ### Objective 
 
