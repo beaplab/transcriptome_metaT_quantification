@@ -17,3 +17,7 @@ Obtain the V9, V4, transcriptomes, housekeeping gene trees and try to disentangl
 2) Obtain the sMAGs from [Delmont et al. 2020](https://www.genoscope.cns.fr/tara/) and evaluate for the Florenciella sMAGs how the reads are distributed. 
 3) Evaluate for the phylogenetic trees of the housekeeping genes of interest if the placement presents discriminations between the 4 known species. 
 
+### Relevant literature
+
+- [Vannier et al. 2016](https://www.nature.com/articles/srep37900) analyzed two Bathycoccus genomes presenting the identical V9, and showing that these two ecotypes are differentiated on environmental axes. 
+-  [Guérin et al. 2022](https://www.nature.com/articles/s42003-022-03939-z) evaluated the distribution of Pelagomonas, its possible niches and its adapatations on a genomic level.
