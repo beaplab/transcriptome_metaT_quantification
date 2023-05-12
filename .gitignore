@@ -1,6 +1,9 @@
 # Nextflow files
 .nextflow
 
+# the data folder
+data
+
 # History files
 .Rhistory
 .Rapp.history
