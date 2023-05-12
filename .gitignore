@@ -1,5 +1,5 @@
 # Nextflow files
-.nextflow
+.nextflow*
 
 # the data folder
 data
