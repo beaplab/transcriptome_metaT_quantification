@@ -8,7 +8,7 @@ process sample_signature{
 
     maxForks 20
     publishDir "data/metaT_samples-signature",
-    mode: 'move',
+    mode: 'copy',
     overwrite: true
 
     input:
@@ -51,9 +51,11 @@ process compare_transcriptomes_metaTs{
     
     tag "${metaT.simpleName}"
 
-    publishDir "data/statistics/similarity_matrix",
+    publishDir "data/statistics/sourmash_gather_output",
     mode: 'symlink',
     overwrite: true
+
+    errorStrategy 'ignore'
 
     input:
     tuple path(transcriptome), path(metaT)
@@ -63,7 +65,7 @@ process compare_transcriptomes_metaTs{
 
     script:
     """
-    sourmash compare $transcriptome $metaT --csv ${transcriptome}_${metaT}.csv
+    sourmash gather $transcriptome $metaT -o ${transcriptome}_${metaT}.csv
     """
 }
 
@@ -124,7 +126,7 @@ workflow {
 
 // Params ---------------------------------------------------------------------
     params.transcriptome = "data/genomic_data/transcriptomes/nucleotide_version/EP00618_Florenciella_parvula.fna.gz"
-    params.fastq = "data/metaT_samples_tara/*.fasta.gz"
+    params.fastq = "data/metaT_samples_tara-test/*.fasta.gz"
 
 
 // Channels -------------------------------------------------------------------

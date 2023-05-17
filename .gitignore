@@ -5,6 +5,9 @@ work
 # the data folder
 data
 
+# the project
+.Rproj
+
 # History files
 .Rhistory
 .Rapp.history
