@@ -1,5 +1,5 @@
 library(tidyverse)
-library(patchwork)
+# library(patchwork)
 
 map.files <- list.files('data/mapping/',
                         pattern = 'quant.sf',
