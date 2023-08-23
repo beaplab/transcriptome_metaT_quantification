@@ -6,7 +6,6 @@ process INDEX_W_SALMON{
 
     tag "${meta}"
 
-
     input:
     tuple val(meta), path(fasta)
 
@@ -24,26 +23,34 @@ process QUANT_SALMON{
     
     conda '/home/aauladell/miniconda3/envs/slm3'
     
-    tag "${meta_sam}"
+    tag "${meta_sam.id}"
 
-    publishDir "data/mapping",
-    mode: 'symlink',
+    publishDir "data/mapping/${meta_t}/${meta_sam.group}",
+    mode: 'copy',
     overwrite: true
 
     input:
-    tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(metaT)
+    tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
 
     output:
-    path "mapping_${meta_sam}_to_${meta_t}"
+    path "${meta_sam.id}"
 
     script:
+    def reference   = "--index $transcriptome_i"
+    def reads1 = [], reads2 = []
+    meta_sam.single_end ? [reads].flatten().each{reads1 << it} : reads.eachWithIndex{ v, ix -> ( ix & 1 ? reads2 : reads1) << v }
+    def input_reads = meta_sam.single_end ? "-r ${reads1.join(" ")}" : "-1 ${reads1.join(" ")} -2 ${reads2.join(" ")}"
     """
 
     salmon quant -l A \
-    -i ${transcriptome_i} \
-    -r ${metaT} \
+    $reference \
+    $input_reads \
     -p 4 \
     --validateMappings \
-    -o mapping_${meta_sam}_to_${meta_t}
+    -o ${meta_sam.id}
     """
 }
+
+
+//    -i ${transcriptome_i} \
+//    -r ${metaT} \

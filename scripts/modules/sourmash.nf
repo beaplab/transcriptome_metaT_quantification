@@ -22,7 +22,7 @@ process COMPARE_SIGNATURES{
 
     conda '/home/aauladell/miniconda3/envs/smash'
     
-    tag "${meta_transcriptome} vs ${meta_sample}"
+    tag "${meta_transcriptome} vs ${meta_sample.id}"
 
     publishDir "data/statistics/sourmash_gather_output",
     mode: 'symlink',
@@ -35,10 +35,10 @@ process COMPARE_SIGNATURES{
 
     // we only want to know which ones are the ones that need the quantification
     output:
-    tuple val(meta_sample), path("${meta_transcriptome}_${meta_sample}.csv")
+    tuple val(meta_sample), path("${meta_transcriptome}_${meta_sample.id}.csv")
 
     script:
     """
-    sourmash gather $transcriptome $sample -o ${meta_transcriptome}_${meta_sample}.csv
+    sourmash gather $transcriptome $sample -o ${meta_transcriptome}_${meta_sample.id}.csv
     """
 }
