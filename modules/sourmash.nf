@@ -24,9 +24,8 @@ process COMPARE_SIGNATURES{
     
     tag "${meta_transcriptome} vs ${meta_sample.id}"
 
-    publishDir "data/statistics/sourmash_gather_output",
-    mode: 'symlink',
-    pattern: 'csv'
+/*     publishDir "data/statistics/sourmash_gather_output",
+    mode: 'symlink' */
 
     errorStrategy 'ignore'
 
@@ -35,7 +34,7 @@ process COMPARE_SIGNATURES{
 
     // we only want to know which ones are the ones that need the quantification
     output:
-    tuple val(meta_sample), path("${meta_transcriptome}_${meta_sample.id}.csv")
+    tuple val(meta_transcriptome), val(meta_sample), path("${meta_transcriptome}_${meta_sample.id}.csv")
 
     script:
     """

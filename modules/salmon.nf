@@ -25,9 +25,9 @@ process QUANT_SALMON{
     
     tag "${meta_sam.id}"
 
-    publishDir "data/mapping/${meta_t}/${meta_sam.group}",
+/*     publishDir "data/mapping/${meta_t}/${meta_sam.group}",
     mode: 'copy',
-    overwrite: true
+    overwrite: true */
 
     input:
     tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
@@ -50,7 +50,3 @@ process QUANT_SALMON{
     -o ${meta_sam.id}
     """
 }
-
-
-//    -i ${transcriptome_i} \
-//    -r ${metaT} \
