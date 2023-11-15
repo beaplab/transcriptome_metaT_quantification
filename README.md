@@ -1,4 +1,75 @@
-# Delving into Florenciella
+# Transcriptome vs metatranscriptomes pipeline
+
+## Objective 
+
+An easy to use pipeline to quantify fast a set of transcriptomes over a lot of metatranscriptome samples. 
+In our `nisaba` system, I have previously computed for all of us the `sourmash` signature for all the metatranscriptomes I have downloaded. 
+
+Here: 
+
+- [metatranscriptomes dataset all info](https://docs.google.com/spreadsheets/d/11mkh7hcndFwxE195rt6JnvfDmUDB1XI-_M87bGpu4bw/edit?usp=sharing)
+
+You can have all the information for the studies I have preprocessed. 
+
+## How to
+
+### Sample sheet creation 
+
+Initially with `scripts/dataset_selector.R` you can define the selection of datasets you will be using in your analysis. 
+You can run the script with the following structure: 
+
+```r
+Rscript scripts/dataset_selector.R 2012_carradec_tara,2021_tara_polar 
+```
+
+It will have generated `data/sample_sheet/2023-11-15_dataset-selection.csv` which will be the output of our pipeline.
+
+### Transcriptomes 
+
+You will have in the `data/transcriptomes` your query transcriptomes to explore in this process. 
+
+### Running nextflow quantification 
+
+With all this information you will be able to run the whole pipeline. 
+
+Initially we will run a `screen` session for having the call in a background and being able to check the progress. 
+
+```
+screen -R quantifying_<name_user>
+```
+
+This call will open a new session. The `-R` flag is to reconnect, but given that there won't be any session with this name, it will create a new one. 
+If we want to get out and continue with our lives, we have to press `Ctrl + A` and then `Ctrl + D`. 
+After a while, we may reconnect again with `screen -R quantifying_<name_user>` to check how everything is going on. 
+
+Inside the session therefore, we will run the following: 
+
+```
+nextflow run main.nf  \
+        --fastq_sheet data/test_data/sample_sheet/dataset_correspondence_paths_test.csv \
+        --transcriptome data/genomic_data/transcriptomes/nucleotide_version/*.fna.gz \
+        --outdir data/test_quantification
+```
+
+If you have paid close attention, you will see that this is a test. It will allow us to see if everything is in the right place. 
+If everything seems to run smooth, cool! If not, time to talk with Adri. 
+
+Expecting the first case, we could continue with our analysis: 
+
+
+```
+nextflow run main.nf  \
+        --fastq_sheet data/sample_sheet/2023-11-15_dataset-selection.csv  \
+        --transcriptome data/genomic_data/transcriptomes/<path to nucleotides> \
+        --outdir data/quantification
+```
+
+
+And then we will continue with the analysis. 
+
+
+
+## Subproject mine: Delving into Florenciella
 
 A small project to evaluate how many species of Florenciella are abundant in TARA. 
 

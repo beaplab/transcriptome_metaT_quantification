@@ -37,6 +37,7 @@ workflow {
 
 // Params ---------------------------------------------------------------------
 
+    params.transcriptome = "data/genomic_data/transcriptomes/nucleotide_version/*.fna.gz"
     params.fastq_sheet = "/home/aauladell/projects/beap_index/data/dataset_correspondence_paths.csv"
     params.outdir = "data/quantification"
 
