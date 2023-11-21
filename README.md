@@ -44,12 +44,9 @@ You can run the script with the following structure:
 ```r
 Rscript scripts/dataset_selector.R 2012_carradec_tara,2021_tara_polar 
 ```
+In which you define the nicknames of the datasets you want to compare. In this case, we are focusing in Tara and Tara Polar, but you may be interested into working with something else. It depends entirely on your species of interest. Check the `Relevance` section to decide. You can also run everything, it will take longer but it's ok. 
 
-It will have generated `data/sample_sheet/2023-11-15_dataset-selection.csv` which will be the output of our pipeline.
-
-### Transcriptomes 
-
-You will have in the `data/transcriptomes` your query transcriptomes to explore in this process. 
+It will have generated `data/sample_sheet/2023-11-15_dataset-selection.csv` which will be the input of our pipeline.
 
 ### Running nextflow quantification 
 
@@ -61,8 +58,9 @@ Initially we will run a `screen` session for having the call in a background and
 screen -R quantifying_<name_user>
 ```
 
-This call will open a new session. The `-R` flag is to reconnect, but given that there won't be any session with this name, it will create a new one. 
-If we want to get out and continue with our lives, we have to press `Ctrl + A` and then `Ctrl + D`. 
+This call will open a new session (you will have to press enter maybe). The `-R` flag is to reconnect, but given that there won't be any session with this name, it will create a new one. 
+If we want to get out and continue with our lives, we have to press `Ctrl + A` and then `Ctrl + D`. This keystrokes are the way `screen` has for doing multiple functions. `Ctrl+A` gets you in the 'let's do things at the screen level' and `Ctrl+D` its the 'get me out of screen'. 
+
 After a while, we may reconnect again with `screen -R quantifying_<name_user>` to check how everything is going on. 
 
 Inside the session therefore, we will run the following: 
