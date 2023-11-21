@@ -12,9 +12,17 @@ quant.df <- read_tsv(file = map.files, id = 'sample') %>%
     select(transcriptome, sample, everything())
 
 
-quant.df %>% 
-    group_by(sample, transcriptome) %>% 
-    summarize( mean.tpm = mean(NumReads)) %>% 
-    arrange(-mean.tpm) %>% 
-    View()
-        
+quant.mat.tpm <- quant.df %>%
+    pivot_wider(names_from = Name, values_from = TPM, id_cols = sample) 
+
+quant.mat.numreads <- quant.df %>%
+    pivot_wider(names_from = Name, values_from = NumReads, id_cols = sample) 
+
+quant.gene.chars <- quant.df %>% 
+    group_by(Name) %>% 
+    summarize( Length = unique(Length), 
+             mean.effective.length = mean(EffectiveLength), 
+             presence = sum(NumReads > 0),
+             mean.tpm = mean(TPM),
+             mean.numreads = mean(NumReads))
+
