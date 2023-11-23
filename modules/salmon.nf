@@ -33,7 +33,7 @@ process QUANT_SALMON{
     tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
 
     output:
-    path "${meta_sam.id}"
+    tuple val(meta_t), val(meta_sam), path("${meta_sam.id}")
 
     script:
     def reference   = "--index $transcriptome_i"
