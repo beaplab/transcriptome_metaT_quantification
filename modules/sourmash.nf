@@ -24,9 +24,6 @@ process COMPARE_SIGNATURES{
     
     tag "${meta_transcriptome} vs ${meta_sample.id}"
 
-/*     publishDir "data/statistics/sourmash_gather_output",
-    mode: 'symlink' */
-
     errorStrategy 'ignore'
 
     input:

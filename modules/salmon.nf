@@ -45,7 +45,7 @@ process QUANT_SALMON{
     salmon quant -l A \
     $reference \
     $input_reads \
-    -p 4 \
+    -p 8 \
     --validateMappings \
     -o ${meta_sam.id}
     """

@@ -22,10 +22,6 @@ process ALIGNMENT_BWA2{
     
     tag "${meta_sam.id}"
 
-/*     publishDir "data/mapping/${meta_t}/${meta_sam.group}",
-    mode: 'copy',
-    overwrite: true */
-
     input:
     tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
 
