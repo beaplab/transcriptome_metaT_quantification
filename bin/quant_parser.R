@@ -1,0 +1,51 @@
+#!/usr/bin/env Rscript
+
+library(tidyverse)
+library(patchwork)
+library(argparser)
+
+
+# Create a parser
+p <- arg_parser("Compile all the quantifications for the transcriptomes")
+
+def.quant <- str_c("data/quantification/mapping/EP00618_Florenciella_parvula/2012_carradec_tara/",
+    c("004_0o8-5_DCM", "009_5-20_DCM"))  |> 
+    str_c(collapse = " ")
+# Add command line arguments
+p <- add_argument(p, "--quant_directories", help="the input directories", type="character", default = def.quant)
+p <- add_argument(p, "--grouping", help="which groups of samples are we working on", default='2012_carradec_tara')
+p <- add_argument(p, "--transcriptome", help="which transcriptome is mapped", default='EP00618_Florenciella_parvula')
+p <- add_argument(p, "--single_end", help="either if its single end or not", default= TRUE)
+
+argv <- parse_args(p)
+
+map.files <- list.files( argv$quant_directories%>% str_split_1(pattern = ' '),
+                        pattern = 'quant.sf',
+                        full.names = T)
+
+quant.df <- read_tsv(file = map.files, id = 'sample') %>% 
+    mutate( transcriptome = dirname(sample) %>% dirname() %>% basename(),
+            sample = dirname(sample) %>% basename()) %>% 
+    select(transcriptome, sample, everything())
+
+
+quant.mat.tpm <- quant.df %>%
+    pivot_wider(names_from = Name, values_from = TPM, id_cols = sample) 
+
+quant.mat.numreads <- quant.df %>%
+    pivot_wider(names_from = Name, values_from = NumReads, id_cols = sample) 
+
+quant.gene.chars <- quant.df %>% 
+    group_by(Name) %>% 
+    summarize( Length = unique(Length), 
+            mean.effective.length = mean(EffectiveLength), 
+            presence = sum(NumReads > 0),
+            mean.tpm = mean(TPM),
+            mean.numreads = mean(NumReads))
+
+
+stripname.shared <- str_c(argv$transcriptome, "quant-over", str_c(argv$grouping, '.tsv'), sep = "_" )
+
+write_tsv(x = quant.mat.tpm, file = str_c('TPM_', stripname.shared ))
+write_tsv(x = quant.mat.numreads, file = str_c('Numreads_', stripname.shared ))
+write_tsv(x = quant.gene.chars, file = str_c('gene-characteristics_', stripname.shared ))

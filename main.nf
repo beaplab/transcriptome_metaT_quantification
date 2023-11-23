@@ -9,6 +9,8 @@ include { QUANT_SALMON as QUANT } from './modules/salmon.nf'
 include { INDEX_W_BWA2 } from './modules/bwa.nf'
 include { ALIGNMENT_BWA2 } from './modules/bwa.nf'
 
+include { QUANTIFICATION_PARSER } from './modules/parser_results.nf'
+
 
 def create_fastq_channel(LinkedHashMap row) {
     // create meta map
@@ -99,5 +101,18 @@ workflow {
     aligning_sams_ch = i_transcriptome_bwa_ch
         .combine( fastqs_to_quantify_ch, by:0 ) 
 
-    bwa_align_ch = ALIGNMENT_BWA2( aligning_sams_ch )
+    //bwa_align_ch = ALIGNMENT_BWA2( aligning_sams_ch )
+
+// Parsing quantifications --------------------------------------------------
+
+    quants_grouped_ch = salmon_quant_ch
+    .map{it -> tuple( [it[0], it[1].group, it[1].single_end], it[2] )}
+    .groupTuple() 
+    //TODO eventually put more beautiful? 
+    .map{ it -> tuple( it[0][0], it[0][1], it[0][2], it[1])}
+
+
+    quant_matrix_ch = QUANTIFICATION_PARSER( quants_grouped_ch ) 
+
+
 }
