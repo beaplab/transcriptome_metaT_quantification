@@ -70,6 +70,9 @@ workflow {
 
     // obtaining all the matches
     gather_res_ch = GATHER( comparison_sigs_ch )
+    // only keep results with match
+    .filter { it[2].baseName != 'NOMATCH'} 
+
 
 // Salmon quant ---------------------------------------------------------------
 

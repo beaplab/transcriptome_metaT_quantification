@@ -31,10 +31,15 @@ process COMPARE_SIGNATURES{
 
     // we only want to know which ones are the ones that need the quantification
     output:
-    tuple val(meta_transcriptome), val(meta_sample), path("${meta_transcriptome}_${meta_sample.id}.csv")
+    tuple val(meta_transcriptome), val(meta_sample), path("*.csv")
 
     script:
     """
     sourmash gather $transcriptome $sample -o ${meta_transcriptome}_${meta_sample.id}.csv
+
+    if [ ! -f ${meta_transcriptome}_${meta_sample.id}.csv ]; then
+        touch NOMATCH.csv 
+    fi
+
     """
 }
