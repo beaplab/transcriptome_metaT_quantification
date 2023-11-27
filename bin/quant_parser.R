@@ -11,6 +11,7 @@ p <- arg_parser("Compile all the quantifications for the transcriptomes")
 def.quant <- str_c("data/quantification/mapping/EP00618_Florenciella_parvula/2012_carradec_tara/",
     c("004_0o8-5_DCM", "009_5-20_DCM"))  |> 
     str_c(collapse = " ")
+
 # Add command line arguments
 p <- add_argument(p, "--quant_directories", help="the input directories", type="character", default = def.quant)
 p <- add_argument(p, "--grouping", help="which groups of samples are we working on", default='2012_carradec_tara')

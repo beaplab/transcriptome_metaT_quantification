@@ -14,10 +14,10 @@ process QUANTIFICATION_PARSER {
 
     script: 
     """
-    ${launchDir}/bin/quant_parser.R  --quant_directories ${dir_quants} \
-                                    --grouping ${group} \
-                                    --transcriptome ${meta_t} \
-                                    --single_end ${single_end}
+    ${projectDir}/bin/quant_parser.R    --quant_directories ${dir_quants} \
+                                        --grouping ${group} \
+                                        --transcriptome ${meta_t} \
+                                        --single_end ${single_end}
     """
 
 
