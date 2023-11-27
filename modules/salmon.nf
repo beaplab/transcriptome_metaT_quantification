@@ -25,9 +25,7 @@ process QUANT_SALMON{
     
     tag "${meta_sam.id}"
 
-/*     publishDir "data/mapping/${meta_t}/${meta_sam.group}",
-    mode: 'copy',
-    overwrite: true */
+    cpus 8
 
     input:
     tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
@@ -45,7 +43,7 @@ process QUANT_SALMON{
     salmon quant -l A \
     $reference \
     $input_reads \
-    -p 8 \
+    -p ${task.cpus} \
     --validateMappings \
     -o ${meta_sam.id}
     """

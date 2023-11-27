@@ -19,8 +19,9 @@ process INDEX_W_BWA2{
 
 process ALIGNMENT_BWA2{
     
-    
     tag "${meta_sam.id}"
+
+    cpus 4
 
     input:
     tuple val(meta_t), path(transcriptome_i), val(meta_sam), path(reads)
@@ -33,9 +34,9 @@ process ALIGNMENT_BWA2{
     INDEX=`find -L ./ -name "*.amb" | sed 's/\\.amb\$//'`
 
     bwa-mem2 mem \\
-        -t 4 \\
+        -t ${task.cpus} \\
         \$INDEX \\
         $reads \\
-        | samtools view --threads 4 -o ${meta_sam.id}.bam -
+        | samtools view --threads ${task.cpus} -o ${meta_sam.id}.bam -
     """
 }

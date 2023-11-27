@@ -104,7 +104,7 @@ workflow {
     aligning_sams_ch = i_transcriptome_bwa_ch
         .combine( fastqs_to_quantify_ch, by:0 ) 
 
-    //bwa_align_ch = ALIGNMENT_BWA2( aligning_sams_ch )
+    bwa_align_ch = ALIGNMENT_BWA2( aligning_sams_ch )
 
 // Parsing quantifications --------------------------------------------------
 
