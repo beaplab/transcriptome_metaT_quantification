@@ -1,93 +1,110 @@
 # Transcriptome vs metatranscriptomes pipeline
 
-## Objective 
+## Objective
 
-An easy to use pipeline to quantify fast a set of transcriptomes over a lot of metatranscriptome samples. It basically does: 
+An easy to use pipeline to quantify fast a set of transcriptomes over a lot of metatranscriptome samples. It basically does:
 
-- Compares the signature of the samples against the transcriptome of interest.
-- Subset all the samples that have present the transcriptome.
-- Quantifies them with both `salmon` and `BWA`.
+-   Compares the signature of the samples against the transcriptome of interest.
+-   Subset all the samples that have present the transcriptome.
+-   Quantifies them with both `salmon` and `BWA`.
 
-In our `nisaba` system, I have previously computed for all of us the `sourmash` signature for all the metatranscriptomes I have downloaded. 
+In our `nisaba` system, I have previously computed for all of us the `sourmash` signature for all the metatranscriptomes I have downloaded.
 
-In the [metatranscriptomes dataset all info](https://docs.google.com/spreadsheets/d/11mkh7hcndFwxE195rt6JnvfDmUDB1XI-_M87bGpu4bw/edit?usp=sharing) google sheet you can have the information from all the datasets present in `nisaba` so far. You should take a look at it and decide which ones you would like to analyze. 
-Take a look at the `Relevance` column to choose! 
+In the [metatranscriptomes dataset all info](https://docs.google.com/spreadsheets/d/11mkh7hcndFwxE195rt6JnvfDmUDB1XI-_M87bGpu4bw/edit?usp=sharing) google sheet you can have the information from all the datasets present in `nisaba` so far. You should take a look at it and decide which ones you would like to analyze. Take a look at the `Relevance` column to choose!
 
 ## How to
 
-### Cloning this project 
+### Preparing the stage
 
-Initially we will copy this directory to the location you would like to calculate everything: 
+For all these analyses we will need:
 
-```
-git clone https://github.com/beaplab/transcriptome_metaT_quantification.git
-```
-It will download a directory with all the scripts inside. Then you can change the name of the folder to your project. 
+-   A folder in which we will generate the quantification outputs.
 
-```
-mv transcriptome_metaT_quantification biogeography_marine-kinetoplastids
-```
-And once inside, you can create in the data folder a soft link to the location of your transcriptomes: 
+-   A sample sheet with the paths to the FASTQs in Nisaba.
 
-```
-ln -s <path-to-your-dir-transcriptomes> data/transcriptomes     
-```
+-   The transcriptomes.
 
-And we are ready to quantify.
+In my example, I will quantify Florenciella.
 
+    mkdir florenciella_biogeography
+    cd florenciella_biogeography
 
-### Sample sheet creation 
+    # a folder for the data we will use
+    mkdir data 
 
-In `nisaba` there is a csv sheets with all the paths to all the files to avoid having copies of them. To obtain a subset of it, you can do it with the `scripts/dataset_selector.R`. We will use its output to quantify the desired samples.
-You can run the script with the following structure: 
+    # a folder for some of the scripts 
+    mkdir scripts
 
-```r
+Once inside, to avoid copying and pasting outputs from previous processes, we can do a [symbolic link](https://www.cyberciti.biz/faq/creating-soft-link-or-symbolic-link/) to the transcriptomes of interest:
+
+    ln -s <path-to-your-dir-transcriptomes> data/transcriptomes     
+
+Now we need to select the samples we are interested in quantify.
+
+#### Sample sheet creation
+
+In `nisaba` there is a csv sheets with all the paths to all the files to avoid having copies of them. To obtain a subset of it, you can do it with an script I have created, named `scripts/dataset_selector.R`.
+
+We need to download it to the folder we created previously:
+
+    wget https://raw.githubusercontent.com/beaplab/transcriptome_metaT_quantification/main/scripts/dataset_selector.R -O scripts/dataset_selector.R
+
+We will use its output to quantify the desired samples. You have to previously choose which datasets you want to quantify, saving its nicknames from the highlighted column. You can run the script with the following structure:
+
+``` r
 Rscript scripts/dataset_selector.R 2012_carradec_tara,2021_tara_polar 
 ```
-In which you define the nicknames of the datasets you want to compare. In this case, we are focusing in Tara and Tara Polar, but you may be interested into working with something else. It depends entirely on your species of interest. Check the `Relevance` section to decide. You can also run everything, it will take longer but it's ok. 
 
-It will have generated `data/sample_sheet/2023-11-15_dataset-selection.csv` which will be the input of our pipeline.
+In this case, we are focusing in Tara and Tara Polar, but you may be interested into working with something else. It depends entirely on your species of interest. Check the `Relevance` section to decide. You can also run everything, it will take longer but it's ok.
 
-### Running nextflow quantification 
+It will have generated `data/sample_sheet/<date>_dataset-selection.csv` which will be the input of our pipeline.
 
-With all this information you will be able to run the whole pipeline. 
+### Running nextflow quantification
 
-Initially we will run a `screen` session for having the call in a background and being able to check the progress. 
+With all this information you will be able to run the whole pipeline.
 
-```
-screen -R quantifying_<name_user>
-```
+Initially we will run a `screen` session for having the call in a background and being able to check the progress.
 
-This call will open a new session (you will have to press enter maybe). The `-R` flag is to reconnect, but given that there won't be any session with this name, it will create a new one. 
-If we want to get out and continue with our lives, we have to press `Ctrl + A` and then `Ctrl + D`. This keystrokes are the way `screen` has for doing multiple functions. `Ctrl+A` gets you in the 'let's do things at the screen level' and `Ctrl+D` its the 'get me out of screen'. 
+    screen -R quantifying_<name_user>
 
-After a while, we may reconnect again with `screen -R quantifying_<name_user>` to check how everything is going on. 
+This call will open a new session (you will have to press enter after running it). The `-R` flag is to reconnect, but given that there won't be any session with this name, it will create a new one. If we want to get out and continue with our lives, we have to press `Ctrl + A` and then `Ctrl + D`. This keystrokes are the way `screen` has for doing multiple functions. `Ctrl+A` gets you in the 'let's do things at the screen level' and `Ctrl+D` its the 'get me out of screen'.
 
-Inside the session therefore, we will run the following: 
+We will test that everything is working correctly using a test sample sheet, with only 3 samples.
 
-```
-nextflow run main.nf  \
-        --fastq_sheet data/test_data/sample_sheet/dataset_correspondence_paths_test.csv \
-        --transcriptome data/genomic_data/transcriptomes/nucleotide_version/*.fna.gz \
-        --outdir data/test_quantification
-```
+We can download it in a similar fashion than before:
 
-If you have paid close attention, you will see that this is a test. It will allow us to see if everything is in the right place. 
-If everything seems to run smooth, cool! If not, time to talk with Adri. 
+    wget https://raw.githubusercontent.com/beaplab/transcriptome_metaT_quantification/main/data/test_data/sample_sheet/dataset_correspondence_paths_test.csv -O data/sample_sheet/test.csv 
 
-Expecting the first case, we could continue with our analysis: 
+Let's test the quantification then:
 
+    nextflow run beaplab/transcriptome_metaT_quantification \
+        --fastq_sheet data/sample_sheet/test.csv \
+        --transcriptome "data/transcriptomes/*.fna.gz" \
+        --outdir data/test_quantification -r main
 
-```
-nextflow run main.nf  \
-        --fastq_sheet data/sample_sheet/2023-11-15_dataset-selection.csv  \
-        --transcriptome data/genomic_data/transcriptomes/<path to nucleotides> \
-        --outdir data/quantification
-```
+A brief explanation of what is happening behind the curtain:
 
+-   nextflow downloads locally the scripts in a hidden folder, and uses them to run.
 
-And then we will continue with the analysis. 
+-   The options are the `fastq_sheet` , in this case the test sheet, the transcriptome, here surrounded by brackets because we want `nextflow` to find all the instances, the `outdir` where everything will be outputted and `-r` which is the release of the software used to run.
 
+If everything worked well, we are good to go, and we can run the program. In my case it would be the following:
 
+    nextflow run beaplab/transcriptome_metaT_quantification \
+        --fastq_sheet data/sample_sheet/<sample sheet>.csv \
+        --transcriptome "data/transcriptomes/*.fna.gz" \
+        --outdir data/quantification -r main
 
+Nextflow should start the different processes automatically.
 
+If for some reason we have to stop the program, we can continue it from where it was left behind adding the `-resume` flag. This is one of the perks of nextflow. The other is that it goes pretty fast at computing everything :)
+
+And then we will continue with the analysis.
+
+Remember to get out of screen! `Ctrl + A` and then `Ctrl + D`.
+
+After a while, we may reconnect again with `screen -R quantifying_<name_user>` to check how everything is going on.
+
+PD: In Nisaba you can find this folder with everything in position to better understand how to structure everything:
+
+    /home/aauladell/small_works/small_examples/florenciella_quantification_example
