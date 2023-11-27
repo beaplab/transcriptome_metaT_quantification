@@ -28,6 +28,15 @@ quant.df <- read_tsv(file = map.files, id = 'sample') %>%
             sample = dirname(sample) %>% basename()) %>% 
     select(transcriptome, sample, everything())
 
+if( argv$single_end ){
+
+    quant.df <- quant.df %>% 
+        mutate( NumReads = NumReads / 2, 
+                reads_p_kilobase = NumReads / EffectiveLength,
+                scaling = sum(reads_p_kilobase) / 1e6,
+                TPM = reads_p_kilobase / scaling)
+
+}
 
 quant.mat.tpm <- quant.df %>%
     pivot_wider(names_from = Name, values_from = TPM, id_cols = sample) 
