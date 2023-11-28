@@ -4,7 +4,7 @@
 
 An easy to use pipeline to quantify fast a set of transcriptomes over a lot of metatranscriptome samples. It basically does:
 
--   Compares the signature of the samples against the transcriptome of interest.
+-   Compares the signature of the samples against the transcriptome of interest. The signatures are a compressed representation of sequences using hashes, [you can find more information here](https://pubmed.ncbi.nlm.nih.gov/31508216/)).
 -   Subset all the samples that have present the transcriptome.
 -   Quantifies them with both `salmon` and `BWA`.
 
@@ -20,7 +20,7 @@ For all these analyses we will need:
 
 -   A folder in which we will generate the quantification outputs.
 
--   A sample sheet with the paths to the FASTQs in Nisaba.
+-   A sample sheet with the paths to the FASTQs in Nisaba (see below how to create it).
 
 -   The transcriptomes.
 
@@ -43,9 +43,17 @@ Now we need to select the samples we are interested in quantify.
 
 #### Sample sheet creation
 
-In `nisaba` there is a csv sheets with all the paths to all the files to avoid having copies of them. To obtain a subset of it, you can do it with an script I have created, named `scripts/dataset_selector.R`.
+In `nisaba` there is a csv sheet with all the paths to all the files with this structure:
+
+| group              | name          | fastq_r1                                                                                        | fastq_r2 | single_end | sig                                                                                      |
+|------------|------------|------------|------------|------------|------------|
+| 2012_carradec_tara | 004_0o8-5_DCM | `/scratch/datasets_symbolic_links/metatranscriptomes/2012_carradec_tara/004_0o8-5_DCM.fasta.gz` | NA       | TRUE       | `/scratch/datasets_symbolic_links/metaT_signatures/2012_carradec_tara/004_0o8-5_DCM.zip` |
+
+It presents all the information to avoid having individual copies for each. To obtain a subset of it, you can do it with an script I have created, named `scripts/dataset_selector.R`.
 
 We need to download it to the folder we created previously:
+
+    mkdir scripts
 
     wget https://raw.githubusercontent.com/beaplab/transcriptome_metaT_quantification/main/scripts/dataset_selector.R -O scripts/dataset_selector.R
 
@@ -75,6 +83,10 @@ We can download it in a similar fashion than before:
 
     wget https://raw.githubusercontent.com/beaplab/transcriptome_metaT_quantification/main/data/test_data/sample_sheet/dataset_correspondence_paths_test.csv -O data/sample_sheet/test.csv 
 
+And we will also download a transcriptome in case you are following this example without one.
+
+    wget https://github.com/beaplab/transcriptome_metaT_quantification/raw/main/data/genomic_data/transcriptomes/nucleotide_version/EP00618_Florenciella_parvula.fna.gz -O transcriptomes/Florenciella_parvula.fna.gz
+
 Let's test the quantification then:
 
     nextflow run beaplab/transcriptome_metaT_quantification \
@@ -86,7 +98,13 @@ A brief explanation of what is happening behind the curtain:
 
 -   nextflow downloads locally the scripts in a hidden folder, and uses them to run.
 
--   The options are the `fastq_sheet` , in this case the test sheet, the transcriptome, here surrounded by brackets because we want `nextflow` to find all the instances, the `outdir` where everything will be outputted and `-r` which is the release of the software used to run.
+-   The options are:
+
+    -   the `fastq_sheet` , in this case the test sheet.
+
+    -   the transcriptome, here surrounded by brackets because we want `nextflow` to find all the instances. If yours does not end with `.fna.gz` it won't find it! Change it accordingly.
+
+    -   the `outdir` where everything will be outputted and `-r` which is the release of the software used to run.
 
 If everything worked well, we are good to go, and we can run the program. In my case it would be the following:
 
@@ -108,3 +126,13 @@ After a while, we may reconnect again with `screen -R quantifying_<name_user>` t
 PD: In Nisaba you can find this folder with everything in position to better understand how to structure everything:
 
     /home/aauladell/small_works/small_examples/florenciella_quantification_example
+
+### Adrià or someone else has updated the workflow: what now
+
+Ok so with nextflow is quite easy to find new versions.
+
+By typing:
+
+    nextflow pull beaplab/transcriptome_metaT_quantification
+
+It will download the new version and prepare it to run.

@@ -1,7 +1,8 @@
-library(tidyverse)
+library(tidyverse, quietly = T)
 
-selection <- commandArgs(trailingOnly = TRUE) %>% str_split( pattern = ',')
-selection <- '2012_carradec_tara,2021_tara_polar' %>% str_split_1(pattern = ',')
+selection <- commandArgs(trailingOnly = TRUE) %>% str_split_1( pattern = ',')
+
+print( str_c('The selection of datasets are the following:', select)) 
 
 dataset <- read_csv('/scratch/datasets_symbolic_links/dataset_sheets/metatranscriptomes_datasets.csv')
 
@@ -13,3 +14,5 @@ dataset %>%
     filter( group %in% selection) %>% 
     write_csv( str_c( 'data/sample_sheet/', date, '_dataset-selection.csv'))
 
+print( str_c( 'Saved results in ',
+              str_c( 'data/sample_sheet/', date, '_dataset-selection.csv')))
