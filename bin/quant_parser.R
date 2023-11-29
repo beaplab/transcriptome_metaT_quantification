@@ -1,26 +1,23 @@
 #!/usr/bin/env Rscript
 
 library(tidyverse)
-library(patchwork)
 library(argparser)
 
 
 # Create a parser
 p <- arg_parser("Compile all the quantifications for the transcriptomes")
 
-def.quant <- str_c("data/quantification/mapping/EP00618_Florenciella_parvula/2012_carradec_tara/",
-    c("004_0o8-5_DCM", "009_5-20_DCM"))  |> 
-    str_c(collapse = " ")
-
 # Add command line arguments
-p <- add_argument(p, "--quant_directories", help="the input directories", type="character", default = def.quant)
+p <- add_argument(p, "--quant_directories", help="the input directories", type="character", nargs = Inf)
 p <- add_argument(p, "--grouping", help="which groups of samples are we working on", default='2012_carradec_tara')
 p <- add_argument(p, "--transcriptome", help="which transcriptome is mapped", default='EP00618_Florenciella_parvula')
 p <- add_argument(p, "--single_end", help="either if its single end or not", default= TRUE)
 
 argv <- parse_args(p)
 
-map.files <- list.files( argv$quant_directories%>% str_split_1(pattern = ' '),
+print(argv$quant_directories) 
+
+map.files <- list.files( argv$quant_directories,
                         pattern = 'quant.sf',
                         full.names = T)
 
@@ -54,7 +51,9 @@ quant.gene.chars <- quant.df %>%
             mean.numreads = mean(NumReads))
 
 
-stripname.shared <- str_c(argv$transcriptome, "quant-over", str_c(argv$grouping, '.tsv'), sep = "_" )
+stripname.shared <- str_c(argv$transcriptome,
+                          "quant-over",
+                          str_c(argv$grouping, '.tsv'), sep = "_" )
 
 write_tsv(x = quant.mat.tpm, file = str_c('TPM_', stripname.shared ))
 write_tsv(x = quant.mat.numreads, file = str_c('Numreads_', stripname.shared ))

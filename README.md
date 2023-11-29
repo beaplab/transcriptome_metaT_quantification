@@ -67,6 +67,14 @@ In this case, we are focusing in Tara and Tara Polar, but you may be interested 
 
 It will have generated `data/sample_sheet/<date>_dataset-selection.csv` which will be the input of our pipeline.
 
+#### Installing some R packages that you may not have
+
+This eventually will be made more elegant, but its a solution for now.
+
+    R 
+    install.packages('tidyverse')
+    install.packages('argparser')
+
 ### Running nextflow quantification
 
 With all this information you will be able to run the whole pipeline.
