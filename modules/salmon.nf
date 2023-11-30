@@ -2,7 +2,7 @@
 
 process INDEX_W_SALMON{
     
-    conda '/home/aauladell/miniconda3/envs/slm3'
+    conda 'bioconda::salmon=1.10.1'
 
     tag "${meta}"
 
@@ -21,7 +21,7 @@ process INDEX_W_SALMON{
 
 process QUANT_SALMON{
     
-    conda '/home/aauladell/miniconda3/envs/slm3'
+    conda 'bioconda::salmon=1.10.1'
     
     tag "${meta_sam.id}"
 

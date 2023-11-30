@@ -2,7 +2,7 @@
 
 process SIGNATURE_CREATION{
 
-    conda '/home/aauladell/miniconda3/envs/smash'
+    conda 'bioconda::sourmash=4.8.4'
 
     tag "${meta}"
 
@@ -20,7 +20,7 @@ process SIGNATURE_CREATION{
 
 process COMPARE_SIGNATURES{
 
-    conda '/home/aauladell/miniconda3/envs/smash'
+    conda 'bioconda::sourmash=4.8.4'
     
     tag "${meta_transcriptome} vs ${meta_sample.id}"
 

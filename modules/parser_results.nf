@@ -4,6 +4,8 @@ process QUANTIFICATION_PARSER {
 
     tag "${meta_t}, ${group}"
 
+    conda "r-argparser r-tidyverse"
+
     input:
     tuple val(meta_t), val(group), val(single_end), path(dir_quants)
 

@@ -21,6 +21,8 @@ process ALIGNMENT_BWA2{
     
     tag "${meta_sam.id}"
 
+    conda "bioconda::samtools"
+
     cpus 4
 
     input:
