@@ -46,7 +46,7 @@ Now we need to select the samples we are interested in quantify.
 In `nisaba` there is a csv sheet with all the paths to all the files with this structure:
 
 | group              | name          | fastq_r1                                                                                        | fastq_r2 | single_end | sig                                                                                      |
-|------------|------------|------------|------------|------------|------------|
+|--------------------|---------------|-------------------------------------------------------------------------------------------------|----------|------------|------------------------------------------------------------------------------------------|
 | 2012_carradec_tara | 004_0o8-5_DCM | `/scratch/datasets_symbolic_links/metatranscriptomes/2012_carradec_tara/004_0o8-5_DCM.fasta.gz` | NA       | TRUE       | `/scratch/datasets_symbolic_links/metaT_signatures/2012_carradec_tara/004_0o8-5_DCM.zip` |
 
 It presents all the information to avoid having individual copies for each. To obtain a subset of it, you can do it with an script I have created, named `scripts/dataset_selector.R`.
@@ -67,13 +67,11 @@ In this case, we are focusing in Tara and Tara Polar, but you may be interested 
 
 It will have generated `data/sample_sheet/<date>_dataset-selection.csv` which will be the input of our pipeline.
 
-#### Installing some R packages that you may not have
+In case you want to run your transcriptome against all the information out there, you can copy directly the csv from the location to your folder: 
 
-This eventually will be made more elegant, but its a solution for now.
+    cp /scratch/datasets_symbolic_links/dataset_sheets/metatranscriptomes_datasets.csv data/sample_sheet/<date>_all-samples.csv
 
-    R 
-    install.packages('tidyverse')
-    install.packages('argparser')
+
 
 ### Running nextflow quantification
 
