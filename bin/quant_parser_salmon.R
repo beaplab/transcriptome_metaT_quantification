@@ -22,7 +22,7 @@ map.files <- list.files( argv$quant_directories,
                         full.names = T)
 
 quant.df <- read_tsv(file = map.files, id = 'sample') %>% 
-    mutate( transcriptome = dirname(sample) %>% dirname() %>% basename(),
+    mutate( transcriptome = argv$transcriptome,
             sample = dirname(sample) %>% basename()) %>% 
     select(transcriptome, sample, everything())
 
