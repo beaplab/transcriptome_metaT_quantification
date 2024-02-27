@@ -72,10 +72,24 @@ workflow {
 
 
     // obtaining all the matches
-    gather_res_ch = GATHER( comparison_sigs_ch )
-    // only keep results with match
-    .filter { it[2].baseName != 'NOMATCH'} 
+    gather_res_raw_ch = GATHER( comparison_sigs_ch )
 
+    gather_res_matched_ch = gather_res_raw_ch
+    // only keep results with match
+    .filter({ !(it[2] =~ /.*NOMATCH.*/) })
+
+    // from the NO MATCHES take 10 samples and map them 
+    subset_nonmatched_ch = gather_res_raw_ch 
+    .filter({ it[2] =~ /.*NOMATCH.*/ })
+    .groupTuple()
+    .map { transcriptome, samples, csvs -> def rand_idx = (0..<samples.size()).shuffled().take(10)
+        [ transcriptome, samples[rand_idx], csvs[rand_idx] ] 
+    }
+    .transpose()
+
+    // join both sets
+    gather_res_ch = gather_res_matched_ch.mix(subset_nonmatched_ch)
+    
 
 // Salmon quant ---------------------------------------------------------------
 
