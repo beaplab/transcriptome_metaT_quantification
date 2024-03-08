@@ -74,21 +74,34 @@ workflow {
     // obtaining all the matches
     gather_res_raw_ch = GATHER( comparison_sigs_ch )
 
-    gather_res_matched_ch = gather_res_raw_ch
+//    gather_res_matched_ch = gather_res_raw_ch
+    gather_res_ch = gather_res_raw_ch
     // only keep results with match
     .filter({ !(it[2] =~ /.*NOMATCH.*/) })
 
     // from the NO MATCHES take 10 samples and map them 
-    subset_nonmatched_ch = gather_res_raw_ch 
-    .filter({ it[2] =~ /.*NOMATCH.*/ })
-    .groupTuple()
-    .map { transcriptome, samples, csvs -> def rand_idx = (0..<samples.size()).shuffled().take(10)
-        [ transcriptome, samples[rand_idx], csvs[rand_idx] ] 
-    }
-    .transpose()
-
-    // join both sets
-    gather_res_ch = gather_res_matched_ch.mix(subset_nonmatched_ch)
+//    subset_nonmatched_ch = gather_res_raw_ch 
+//    .filter({ it[2] =~ /.*NOMATCH.*/ })
+//    .groupTuple()
+//    .map { transcriptome, samples, csvs -> def rand_idx = (0..<samples.size()).shuffled().take(10)
+//        [ transcriptome, samples[rand_idx], csvs[rand_idx] ] 
+//    }
+//    .transpose()
+//
+//    //TODO solve this mess, try to find a way to mark them
+//    subset_nonmatched_ch
+//    .map{ it -> "$it"}
+//    .collectFile(
+//        name: 'nomatch_controls.txt',
+//        storeDir:"${params.outdir}",
+//        newLine: true
+//    )
+//    .view()
+//
+//
+//
+//    // join both sets
+//    gather_res_ch = gather_res_matched_ch.mix(subset_nonmatched_ch)
     
 
 // Salmon quant ---------------------------------------------------------------

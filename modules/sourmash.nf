@@ -24,8 +24,6 @@ process COMPARE_SIGNATURES{
     
     tag "${meta_transcriptome} vs ${meta_sample.id}"
 
-    errorStrategy 'ignore'
-
     input:
     tuple val(meta_transcriptome), path(transcriptome), val(meta_sample), path(sample)
 
