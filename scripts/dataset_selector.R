@@ -2,7 +2,7 @@ library(tidyverse, quietly = T)
 
 selection <- commandArgs(trailingOnly = TRUE) %>% str_split_1( pattern = ',')
 
-print( str_c('The selection of datasets are the following:', select)) 
+print( str_c('The selection of datasets are the following:', selection)) 
 
 dataset <- read_csv('/scratch/datasets_symbolic_links/dataset_sheets/metatranscriptomes_datasets.csv')
 
