@@ -7,7 +7,7 @@ process PROFILE_BAM{
     conda "bioconda::msamtools"
 
     input:
-    tuple val(meta_t), val(meta_sam), path(bam)
+    tuple val(meta_t), val(meta_sam), path(bam), path(index)
 
     output:
     tuple val(meta_t), val(meta_sam), path("*.profile.txt.gz")
