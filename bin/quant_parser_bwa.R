@@ -35,8 +35,11 @@ if( argv$single_end ){
                   by = c('gene' = 'Name')) %>% 
         mutate( NumReads = NumReads / 2, 
                 reads_p_kilobase = NumReads / mean.effective.length,
-                scaling = sum(reads_p_kilobase) / 1e6,
-                TPM = reads_p_kilobase / scaling)
+                scaling = sum(reads_p_kilobase, na.rm = T) / 1e6,
+                TPM = reads_p_kilobase / scaling,
+                # sometimes Salmon removes certain genes of the quantification
+                # Here we consider them as being 0 since its removal tends to have good reasons
+                TPM = ifelse(is.na(TPM), 0, TPM) )
     
 }else{
     
@@ -44,10 +47,11 @@ if( argv$single_end ){
         left_join(gene_lengths_df,
                   by = c('gene' = 'Name')) %>% 
         mutate( reads_p_kilobase = NumReads / mean.effective.length,
-                scaling = sum(reads_p_kilobase) / 1e6,
-                TPM = reads_p_kilobase / scaling)
-    
-    
+                scaling = sum(reads_p_kilobase, na.rm = T) / 1e6,
+                TPM = (reads_p_kilobase / scaling),
+                # sometimes Salmon removes certain genes of the quantification
+                # Here we consider them as being 0 since its removal tends to come for correct reasons!
+                TPM = ifelse(is.na(TPM), 0, TPM) )
     
 }
 

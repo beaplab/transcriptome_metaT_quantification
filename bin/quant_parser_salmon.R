@@ -45,7 +45,7 @@ quant.mat.numreads <- quant.df %>%
 quant.gene.chars <- quant.df %>% 
     group_by(Name) %>% 
     summarize( Length = unique(Length), 
-            mean.effective.length = mean(EffectiveLength), 
+            mean.effective.length = mean(EffectiveLength, na.rm = TRUE), 
             presence = sum(NumReads > 0),
             mean.tpm = mean(TPM),
             mean.numreads = mean(NumReads))
